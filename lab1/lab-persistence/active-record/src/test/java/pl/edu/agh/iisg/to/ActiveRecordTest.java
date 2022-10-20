@@ -1,22 +1,16 @@
 package pl.edu.agh.iisg.to;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.*;
 import pl.edu.agh.iisg.to.connection.ConnectionProvider;
 import pl.edu.agh.iisg.to.executor.QueryExecutor;
 import pl.edu.agh.iisg.to.model.Course;
 import pl.edu.agh.iisg.to.model.Grade;
 import pl.edu.agh.iisg.to.model.Student;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,17 +21,17 @@ public class ActiveRecordTest {
         ConnectionProvider.init("jdbc:sqlite:active_record_test.db");
     }
 
+    @AfterAll
+    public static void cleanUp() throws SQLException {
+        ConnectionProvider.close();
+    }
+
     @BeforeEach
     public void setUp() throws SQLException {
         QueryExecutor.delete("DELETE FROM STUDENT_COURSE");
         QueryExecutor.delete("DELETE FROM STUDENT");
         QueryExecutor.delete("DELETE FROM COURSE");
         QueryExecutor.delete("DELETE FROM GRADE");
-    }
-
-    @AfterAll
-    public static void cleanUp() throws SQLException {
-        ConnectionProvider.close();
     }
 
     @Test
@@ -72,7 +66,8 @@ public class ActiveRecordTest {
     public void findStudentIndexTest() {
         // When
         var student = Student.create("Kasia", "Kowalska", 300124);
-        var foundStudent = Student.findByIndexNumber(student.get().indexNumber());
+        var foundStudent =
+                Student.findByIndexNumber(student.get().indexNumber());
 
         // Then
         checkStudent(student);
@@ -112,7 +107,8 @@ public class ActiveRecordTest {
         var course = Course.create("MOWNIT");
 
         boolean studentEnrolled = course.get().enrollStudent(student.get());
-        boolean redundantStudentEnroll = course.get().enrollStudent(student.get());
+        boolean redundantStudentEnroll =
+                course.get().enrollStudent(student.get());
 
         // Then
         checkStudent(student);
@@ -175,7 +171,8 @@ public class ActiveRecordTest {
         var student = Student.create("Kasia", "Kowalska", 900124);
         var course = Course.create("MOWNIT 2");
 
-        boolean studentGraded = Grade.gradeStudent(student.get(), course.get(), 5.0f);
+        boolean studentGraded =
+                Grade.gradeStudent(student.get(), course.get(), 5.0f);
 
         // Then
         checkStudent(student);

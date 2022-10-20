@@ -21,15 +21,21 @@ public class Course {
     @ManyToMany
     @JoinTable(
             name = "student_course",
-            joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "ID"))
-    private Set<Student> studentSet = new HashSet<>();
+            joinColumns = @JoinColumn(
+                    name = "student_id",
+                    referencedColumnName = "ID"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "course_id",
+                    referencedColumnName = "ID"
+            )
+    )
+    private final Set<Student> studentSet = new HashSet<>();
 
     @OneToMany(mappedBy = "course")
-    private Set<Grade> gradeSet = new HashSet<>();
+    private final Set<Grade> gradeSet = new HashSet<>();
 
-    Course() {
-    }
+    public Course() {}
 
     public Course(final String name) {
         this.name = name;

@@ -25,15 +25,16 @@ public class Student {
     private int indexNumber;
 
     @OneToMany(mappedBy = "student")
-    private Set<Grade> gradeSet = new HashSet<>();
+    private final Set<Grade> gradeSet = new HashSet<>();
 
     @ManyToMany(mappedBy = "studentSet")
-    private Set<Course> courseSet = new HashSet<>();
+    private final Set<Course> courseSet = new HashSet<>();
 
-    Student() {
-    }
+    public Student() {}
 
-    public Student(final String firstName, final String lastName, final int indexNumber) {
+    public Student(final String firstName,
+                   final String lastName,
+                   final int indexNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.indexNumber = indexNumber;

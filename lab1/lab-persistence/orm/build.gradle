@@ -18,7 +18,7 @@ test {
 }
 
 dependencies {
-    implementation 'org.xerial:sqlite-jdbc:3.8.11.2'
+    implementation 'org.xerial:sqlite-jdbc:3.39.3.0'
     implementation 'org.hibernate:hibernate-core:5.2.2.Final'
     implementation 'org.hibernate:hibernate-entitymanager:5.2.2.Final'
     implementation 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'

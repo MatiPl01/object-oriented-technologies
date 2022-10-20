@@ -1,8 +1,8 @@
 package pl.edu.agh.iisg.to;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +13,6 @@ import pl.edu.agh.iisg.to.dao.CourseDao;
 import pl.edu.agh.iisg.to.dao.GradeDao;
 import pl.edu.agh.iisg.to.dao.StudentDao;
 import pl.edu.agh.iisg.to.model.Course;
-import pl.edu.agh.iisg.to.model.Grade;
 import pl.edu.agh.iisg.to.model.Student;
 import pl.edu.agh.iisg.to.session.SessionService;
 
@@ -97,7 +96,7 @@ public class OrmTest {
         var course = courseDao.create("MOWNIT");
 
         boolean studentEnrolled = courseDao.enrollStudent(course.get(), student.get());
-        boolean reundantStudentEnroll = courseDao.enrollStudent(course.get(), student.get());
+        boolean redundantStudentEnroll = courseDao.enrollStudent(course.get(), student.get());
 
         var courseStudents = course.get().studentSet();
         var studentCourses = student.get().courseSet();
@@ -107,7 +106,7 @@ public class OrmTest {
         checkCourse(course);
 
         assertTrue(studentEnrolled);
-        assertFalse(reundantStudentEnroll);
+        assertFalse(redundantStudentEnroll);
 
         assertTrue(courseStudents.contains(student.get()));
         assertTrue(studentCourses.contains(course.get()));
@@ -119,6 +118,8 @@ public class OrmTest {
         var student1 = studentDao.create("Adam", "Paciaciak", 800125);
         var student2 = studentDao.create("Jan", "Paciaciak", 800126);
         var course = courseDao.create("WDI");
+        courseDao.enrollStudent(course.get(), student1.get());
+        courseDao.enrollStudent(course.get(), student2.get());
 
         var students = course.get().studentSet();
 
@@ -138,7 +139,7 @@ public class OrmTest {
         var student = studentDao.create("Kasia", "Kowalska", 900124);
         var course = courseDao.create("MOWNIT 2");
 
-        var initialStudentGrades = student.get().gradeSet();
+        var initialStudentGrades = new HashSet<>(student.get().gradeSet());
         boolean studentGraded = gradeDao.gradeStudent(student.get(), course.get(), 5.0f);
         var resultStudentGrades = student.get().gradeSet();
 
@@ -191,5 +192,4 @@ public class OrmTest {
             Assertions.assertNotNull(c.name());
         });
     }
-
 }
