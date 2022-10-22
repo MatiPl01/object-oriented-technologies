@@ -37,11 +37,11 @@ public class SchoolClassTest {
 	SchoolClass sclass;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		sclass = new SchoolClass(CLASS_NAME, CLASS_PROFILE);
-		List<Term> terms1 = new ArrayList<Term>();
+		List<Term> terms1 = new ArrayList<>();
 		terms1.add(term1);
-		List<Term> terms2 = new ArrayList<Term>();
+		List<Term> terms2 = new ArrayList<>();
 		terms2.add(term2);
 		lenient().when(subject1.getSchedule()).thenReturn(terms1);
 		lenient().when(subject2.getSchedule()).thenReturn(terms2);

@@ -22,7 +22,7 @@ public class LessonTest {
 	@Mock Student student;
 	
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		lesson = new Lesson(subject);
 	}
 

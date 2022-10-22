@@ -8,46 +8,45 @@ import pl.edu.agh.logger.Logger;
 import pl.edu.agh.school.IPersistenceManager;
 import pl.edu.agh.school.SchoolClass;
 import pl.edu.agh.school.Teacher;
+import pl.edu.agh.school.annotations.Classes;
+import pl.edu.agh.school.annotations.Teachers;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 public final class SerializablePersistenceManager implements IPersistenceManager {
-
-    private static final Logger log = Logger.getInstance();
 
     private String teachersStorageFileName;
 
     private String classStorageFileName;
 
     @Inject
+    private Logger logger;
+
+    @Inject
     @Override
-    public void setTeachersStorageFileName(@Named("Teachers") String teachersStorageFileName) {
+    public void setTeachersStorageFileName(@Teachers String teachersStorageFileName) {
         this.teachersStorageFileName = teachersStorageFileName;
     }
 
     @Inject
     @Override
-    public void setClassStorageFileName(@Named("Class") String classStorageFileName) {
+    public void setClassStorageFileName(@Classes String classStorageFileName) {
         this.classStorageFileName = classStorageFileName;
     }
 
-    @Inject
-    public SerializablePersistenceManager() {
-        this.teachersStorageFileName = "teachers.dat";
-        this.classStorageFileName = "classes.dat";
-    }
     @Override
     public void saveTeachers(List<Teacher> teachers) {
+        System.out.println("HERE: " + logger);
         if (teachers == null) {
             throw new IllegalArgumentException();
         }
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(teachersStorageFileName))) {
             oos.writeObject(teachers);
+            logger.log("Saved " + teachers.size() + " teachers data");
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
-            log.log("There was an error while saving the teachers data", e);
+            logger.log("There was an error while saving the teachers data", e);
         }
     }
 
@@ -57,10 +56,11 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         ArrayList<Teacher> res = null;
         try (ObjectInputStream ios = new ObjectInputStream(new FileInputStream(teachersStorageFileName))) {
             res = (ArrayList<Teacher>) ios.readObject();
+            logger.log("Loaded " + res.size() + " teachers data");
         } catch (FileNotFoundException e) {
             res = new ArrayList<>();
         } catch (IOException e) {
-            log.log("There was an error while loading the teachers data", e);
+            logger.log("There was an error while loading the teachers data", e);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
@@ -74,10 +74,11 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         }
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(classStorageFileName))) {
             oos.writeObject(classes);
+            logger.log("Saved " + classes.size() + " classes data");
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
-            log.log("There was an error while saving the classes data", e);
+            logger.log("There was an error while saving the classes data", e);
         }
     }
 
@@ -87,10 +88,11 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         ArrayList<SchoolClass> res = null;
         try (ObjectInputStream ios = new ObjectInputStream(new FileInputStream(classStorageFileName))) {
             res = (ArrayList<SchoolClass>) ios.readObject();
+            logger.log("Loaded " + res.size() + " classes data");
         } catch (FileNotFoundException e) {
             res = new ArrayList<>();
         } catch (IOException e) {
-            log.log("There was an error while loading the classes data", e);
+            logger.log("There was an error while loading the classes data", e);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }

@@ -8,8 +8,6 @@ import java.util.List;
 
 import pl.edu.agh.logger.Logger;
 
-import javax.inject.Inject;
-
 public class Subject implements Serializable {
 
 	private static final long serialVersionUID = 5342955138128716653L;
@@ -22,6 +20,8 @@ public class Subject implements Serializable {
 	private final List<Lesson> lessons = new ArrayList<>();
 
 	private Teacher _teacher;
+
+
 
 	public Subject(String name) {
 		this.name = name;
@@ -80,5 +80,4 @@ public class Subject implements Serializable {
 	public String toString() {
 		return "subject " + name;
 	}
-
 }

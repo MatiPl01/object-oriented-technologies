@@ -8,16 +8,15 @@ import pl.edu.agh.logger.Logger;
 import javax.inject.Inject;
 
 public class SchoolDAO {
-
     private final List<Teacher> teachers;
-
     private final List<SchoolClass> classes;
-
     private final IPersistenceManager manager;
+    private final Logger logger;
 
     @Inject
-    public SchoolDAO(IPersistenceManager manager) {
+    public SchoolDAO(IPersistenceManager manager, Logger logger) {
         this.manager = manager;
+        this.logger = logger;
         teachers = manager.loadTeachers();
         classes = manager.loadClasses();
     }
@@ -26,7 +25,7 @@ public class SchoolDAO {
         if (!teachers.contains(teacher)) {
             teachers.add(teacher);
             manager.saveTeachers(teachers);
-            Logger.getInstance().log("Added " + teacher.toString());
+            logger.log("Added " + teacher.toString());
         }
     }
 
@@ -34,7 +33,7 @@ public class SchoolDAO {
         if (!classes.contains(newClass)) {
             classes.add(newClass);
             manager.saveClasses(classes);
-            Logger.getInstance().log("Added " + newClass.toString());
+            logger.log("Added " + newClass.toString());
         }
     }
 

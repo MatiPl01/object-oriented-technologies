@@ -33,12 +33,12 @@ public class TeacherTest {
 
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         teacher = new Teacher(NAME, SURNAME);
-        List<Term> schedule1 = new ArrayList<Term>();
+        List<Term> schedule1 = new ArrayList<>();
         schedule1.add(term1);
         lenient().when(subject1.getSchedule()).thenReturn(schedule1);
-        List<Term> schedule2 = new ArrayList<Term>();
+        List<Term> schedule2 = new ArrayList<>();
         schedule2.add(term2);
         lenient().when(subject2.getSchedule()).thenReturn(schedule2);
     }

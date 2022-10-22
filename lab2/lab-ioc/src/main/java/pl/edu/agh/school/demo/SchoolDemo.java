@@ -7,10 +7,8 @@ import java.util.Collection;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import pl.edu.agh.logger.ConsoleMessageSerializer;
-import pl.edu.agh.logger.FileMessageSerializer;
-import pl.edu.agh.logger.Logger;
 import pl.edu.agh.school.*;
+import pl.edu.agh.school.modules.LoggerModule;
 import pl.edu.agh.school.modules.SchoolModule;
 
 public class SchoolDemo {
@@ -20,14 +18,11 @@ public class SchoolDemo {
     private final DateFormat timeFormat = new SimpleDateFormat("hh:mm");
 
     public SchoolDemo() {
-        Injector injector = Guice.createInjector(new SchoolModule());
+        Injector injector = Guice.createInjector(new SchoolModule(), new LoggerModule());
         school = injector.getInstance(School.class);
     }
 
     public static void main(String[] args) throws Exception {
-        Logger.getInstance().registerSerializer(new ConsoleMessageSerializer());
-        Logger.getInstance().registerSerializer(new FileMessageSerializer("logfile.log"));
-
         SchoolDemo schoolDemo = new SchoolDemo();
         schoolDemo.initTeachers();
         schoolDemo.initClass();

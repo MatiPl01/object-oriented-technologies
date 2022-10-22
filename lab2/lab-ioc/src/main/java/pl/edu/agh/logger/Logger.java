@@ -17,7 +17,13 @@ public class Logger {
 
     public Logger() {
         init();
-        this.registeredSerializers = new HashSet<IMessageSerializer>();
+        this.registeredSerializers = new HashSet<>();
+    }
+
+    public static Logger getInstance() {
+        if (logger == null)
+            logger = new Logger();
+        return logger;
     }
 
     public Logger(Set<IMessageSerializer> registeredSerializers) {
@@ -26,12 +32,6 @@ public class Logger {
             throw new IllegalArgumentException("null argument");
         }
         this.registeredSerializers = registeredSerializers;
-    }
-
-    public static Logger getInstance() {
-        if (logger == null)
-            logger = new Logger();
-        return logger;
     }
 
     public void registerSerializer(IMessageSerializer messageSerializer) {
@@ -53,5 +53,4 @@ public class Logger {
     private void init() {
         dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
     }
-
 }

@@ -1,11 +1,11 @@
 package pl.edu.agh.school;
 
+import pl.edu.agh.logger.Logger;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import pl.edu.agh.logger.Logger;
 
 public class SchoolClass implements Serializable {
 
@@ -59,7 +59,7 @@ public class SchoolClass implements Serializable {
     }
 
     public Collection<Term> getSchedule() {
-        Collection<Term> terms = new ArrayList<Term>();
+        Collection<Term> terms = new ArrayList<>();
         for (Subject subject : subjects) {
             terms.addAll(subject.getSchedule());
         }

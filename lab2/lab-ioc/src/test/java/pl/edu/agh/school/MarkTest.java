@@ -18,7 +18,7 @@ public class MarkTest {
 	@Mock Student student;
 	
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		mark=new Mark(value,student);
 	}
 

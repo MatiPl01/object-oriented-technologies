@@ -25,9 +25,9 @@ public class StudentTest {
 	@Mock Term term1;
 	
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		student=new Student(STUDENT_NAME, STUDENT_SURNAME);
-		List<Term> schedule=new ArrayList<Term>();
+		List<Term> schedule=new ArrayList<>();
 		schedule.add(term1);
 		lenient().when(class1.getSchedule()).thenReturn(schedule);
 	}

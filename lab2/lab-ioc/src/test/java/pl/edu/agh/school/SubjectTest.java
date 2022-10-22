@@ -30,7 +30,7 @@ public class SubjectTest {
 	Subject subject;
 	
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		subject=new Subject(SUBJECT_NAME);
 	}
 
