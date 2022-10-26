@@ -1,5 +1,6 @@
 package pl.edu.agh.logger;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,12 +21,7 @@ public class Logger {
         this.registeredSerializers = new HashSet<>();
     }
 
-    public static Logger getInstance() {
-        if (logger == null)
-            logger = new Logger();
-        return logger;
-    }
-
+    @Inject
     public Logger(Set<IMessageSerializer> registeredSerializers) {
         init();
         if (registeredSerializers == null) {
