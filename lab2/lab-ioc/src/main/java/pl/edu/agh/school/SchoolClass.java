@@ -2,6 +2,7 @@ package pl.edu.agh.school;
 
 import pl.edu.agh.logger.Logger;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class SchoolClass implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1458264557391305041L;
 
     private final String name;
@@ -17,9 +19,12 @@ public class SchoolClass implements Serializable {
     private final List<Student> students = new ArrayList<>();
     private final List<Subject> subjects = new ArrayList<>();
 
-    public SchoolClass(String name, String profile) {
+    private transient final Logger logger;
+
+    public SchoolClass(String name, String profile, Logger logger) {
         this.name = name;
         this.profile = profile;
+        this.logger = logger;
     }
 
     public String getName() {
@@ -38,7 +43,7 @@ public class SchoolClass implements Serializable {
     public void addSubject(Subject subject) {
         if (!subjects.contains(subject)) {
             subjects.add(subject);
-            Logger.getInstance().log("Added " + subject.toString() + " to " + this);
+            logger.log("Added " + subject.toString() + " to " + this);
         }
     }
 
@@ -50,7 +55,7 @@ public class SchoolClass implements Serializable {
         if (!students.contains(student)) {
             students.add(student);
             student.setSchoolClass(this);
-            Logger.getInstance().log("Added " + student + " to class " + this);
+            logger.log("Added " + student + " to class " + this);
         }
     }
 

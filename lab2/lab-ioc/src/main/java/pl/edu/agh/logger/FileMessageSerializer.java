@@ -3,7 +3,6 @@ package pl.edu.agh.logger;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 
 public class FileMessageSerializer implements IMessageSerializer {
     private final String filename;

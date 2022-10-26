@@ -17,8 +17,12 @@ public class SchoolDemo {
 
     private final DateFormat timeFormat = new SimpleDateFormat("hh:mm");
 
+    private final Injector injector = Guice.createInjector(
+        new SchoolModule(),
+        new LoggerModule()
+    );
+
     public SchoolDemo() {
-        Injector injector = Guice.createInjector(new SchoolModule(), new LoggerModule());
         school = injector.getInstance(School.class);
     }
 
@@ -45,14 +49,15 @@ public class SchoolDemo {
 
     public void initClass() throws ParseException {
         if (school.findClass("1A", "humane").isEmpty()) {
-            SchoolClass schoolClass = new SchoolClass("1A", "humane");
+            ISchoolClassFactory schoolClassFactory = injector.getInstance(ISchoolClassFactory.class);
+            SchoolClass schoolClass = schoolClassFactory.create("1A", "humane");
             schoolClass.addStudent(new Student("Peter", "Pan"));
             schoolClass.addStudent(new Student("Anna", "Shirley"));
             schoolClass.addStudent(new Student("Harry", "Potter"));
             schoolClass.addStudent(new Student("Ron", "Weasley"));
 
-            Subject subject;
-            subject = new Subject("Math");
+            ISubjectFactory subjectFactory = injector.getInstance(ISubjectFactory.class);
+            Subject subject = subjectFactory.create("Math");
             subject.addTerm(new Term(DayOfWeek.MONDAY, timeFormat
                     .parse("10:30"), 45));
             subject.addTerm(new Term(DayOfWeek.THURSDAY, timeFormat
@@ -61,7 +66,7 @@ public class SchoolDemo {
                     .findPerson("Thomas", "Anderson").iterator().next());
             schoolClass.addSubject(subject);
 
-            subject = new Subject("English");
+            subject = subjectFactory.create("English");
             subject.addTerm(new Term(DayOfWeek.MONDAY, timeFormat
                     .parse("12:00"), 45));
             subject.addTerm(new Term(DayOfWeek.TUESDAY, timeFormat
@@ -71,35 +76,37 @@ public class SchoolDemo {
             subject.addTerm(new Term(DayOfWeek.THURSDAY, timeFormat
                     .parse("11:00"), 45));
             subject.setTeacher((Teacher) school.findPerson("Han", "Solo")
-                    .iterator().next());
+                                               .iterator().next());
             schoolClass.addSubject(subject);
 
-            subject = new Subject("Computer Science");
+            subject = subjectFactory.create("Computer Science");
             subject.addTerm(new Term(DayOfWeek.TUESDAY, timeFormat
                     .parse("09:00"), 45));
             subject.setTeacher((Teacher) school
                     .findPerson("Thomas", "Anderson").iterator().next());
             schoolClass.addSubject(subject);
 
-            subject = new Subject("Chemistry");
+            subject = subjectFactory.create("Chemistry");
             subject.addTerm(new Term(DayOfWeek.WEDNESDAY, timeFormat
                     .parse("11:30"), 45));
             subject.setTeacher((Teacher) school.findPerson("Princess", "Leia")
-                    .iterator().next());
+                                               .iterator().next());
             schoolClass.addSubject(subject);
 
-            subject = new Subject("Potions");
+            subject = subjectFactory.create("Potions");
             subject.addTerm(new Term(DayOfWeek.FRIDAY, timeFormat
                     .parse("09:00"), 90));
             subject.setTeacher((Teacher) school.findPerson("Severus", "Snape")
-                    .iterator().next());
+                                               .iterator().next());
             schoolClass.addSubject(subject);
 
-            subject = new Subject("Black Magic Defense");
+            subject = subjectFactory.create("Black Magic Defense");
             subject.addTerm(new Term(DayOfWeek.FRIDAY, timeFormat
                     .parse("12:30"), 90));
-            subject.setTeacher((Teacher) school.findPerson("Dolores",
-                    "Umbridge").iterator().next());
+            subject.setTeacher((Teacher) school.findPerson(
+                    "Dolores",
+                    "Umbridge"
+            ).iterator().next());
             schoolClass.addSubject(subject);
 
             school.addClass(schoolClass);
@@ -110,7 +117,7 @@ public class SchoolDemo {
 
     public void showClass() {
         SchoolClass schoolClass = school.findClass("1A", "humane").iterator()
-                .next();
+                                        .next();
 
         System.out.println("---------- CLASS ----------");
         System.out.format("Class name: %s \n", schoolClass.getName());
@@ -127,21 +134,25 @@ public class SchoolDemo {
         System.out.println("---------- CLASS SUBJECTS ----------");
         for (Subject subject : schoolClass.getSubjects()) {
             System.out.format("Subject name: %s \n", subject.getName());
-            System.out.format("Subject teacher: %s %s\n", subject.getTeacher()
-                    .getName(), subject.getTeacher().getSurname());
+            System.out.format(
+                    "Subject teacher: %s %s\n",
+                    subject.getTeacher()
+                           .getName(),
+                    subject.getTeacher().getSurname()
+            );
         }
         System.out.println();
     }
 
     public void showScheduleForClass() {
         SchoolClass schoolClass = school.findClass("1A", "humane").iterator()
-                .next();
+                                        .next();
         renderSchedule(schoolClass.getSchedule(), "Class 1A");
     }
 
     public void showScheduleForTeacher() {
         Teacher teacher = (Teacher) school.findPerson("Han", "Solo").iterator()
-                .next();
+                                          .next();
         renderSchedule(teacher);
     }
 
@@ -151,11 +162,11 @@ public class SchoolDemo {
 
     private void renderSchedule(Collection<Term> terms, String description) {
         System.out.println("---------- SCHEDULE for " + description
-                + " ----------");
+                           + " ----------");
         for (Term term : terms) {
             System.out.format("\tDay of week: %s \n", term.getDayOfWeek());
             System.out.format("\tStart time: %s \n", timeFormat.format(term
-                    .getStartTime()));
+                                                                               .getStartTime()));
             System.out.format("\tDuration (min): %d \n", term.getDuration());
             System.out.println("----------------------------------------");
         }

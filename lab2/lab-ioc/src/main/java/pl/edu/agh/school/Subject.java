@@ -1,5 +1,6 @@
 package pl.edu.agh.school;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import pl.edu.agh.logger.Logger;
 
 public class Subject implements Serializable {
 
+	@Serial
 	private static final long serialVersionUID = 5342955138128716653L;
 
 	private final String name;
@@ -20,11 +22,11 @@ public class Subject implements Serializable {
 	private final List<Lesson> lessons = new ArrayList<>();
 
 	private Teacher _teacher;
+	private transient final Logger logger;
 
-
-
-	public Subject(String name) {
+	public Subject(String name, Logger logger) {
 		this.name = name;
+		this.logger = logger;
 	}
 
 	public String getName() {
@@ -35,7 +37,7 @@ public class Subject implements Serializable {
 		if (!terms.contains(newTerm)) {
 			terms.add(newTerm);
 			newTerm.setSubject(this);
-			Logger.getInstance().log("Added " + newTerm + " to " + this);
+			logger.log("Added " + newTerm + " to " + this);
 		}
 	}
 

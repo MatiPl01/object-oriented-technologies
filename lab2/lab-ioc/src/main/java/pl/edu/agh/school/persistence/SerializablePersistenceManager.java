@@ -36,7 +36,6 @@ public final class SerializablePersistenceManager implements IPersistenceManager
 
     @Override
     public void saveTeachers(List<Teacher> teachers) {
-        System.out.println("HERE: " + logger);
         if (teachers == null) {
             throw new IllegalArgumentException();
         }
@@ -46,7 +45,7 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
-            logger.log("There was an error while saving the teachers data", e);
+            logger.log("There was an error while saving the teachers data: ", e);
         }
     }
 
@@ -60,7 +59,7 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         } catch (FileNotFoundException e) {
             res = new ArrayList<>();
         } catch (IOException e) {
-            logger.log("There was an error while loading the teachers data", e);
+            logger.log("There was an error while loading the teachers data: ", e);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
@@ -78,7 +77,7 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
-            logger.log("There was an error while saving the classes data", e);
+            logger.log("There was an error while saving the classes data: ", e);
         }
     }
 
@@ -92,7 +91,7 @@ public final class SerializablePersistenceManager implements IPersistenceManager
         } catch (FileNotFoundException e) {
             res = new ArrayList<>();
         } catch (IOException e) {
-            logger.log("There was an error while loading the classes data", e);
+            logger.log("There was an error while loading the classes data: ", e);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
