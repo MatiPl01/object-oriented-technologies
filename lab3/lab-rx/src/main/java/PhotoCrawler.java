@@ -1,11 +1,14 @@
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import model.Photo;
+import model.PhotoSize;
 import util.PhotoDownloader;
 import util.PhotoProcessor;
 import util.PhotoSerializer;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,8 +22,10 @@ public class PhotoCrawler {
     private final PhotoSerializer photoSerializer;
 
     private final PhotoProcessor photoProcessor;
+    private final int bufferSize;
 
-    public PhotoCrawler() throws IOException {
+    public PhotoCrawler(int bufferSize) throws IOException {
+        this.bufferSize = bufferSize;
         this.photoDownloader = new PhotoDownloader();
         this.photoSerializer = new PhotoSerializer("./photos");
         this.photoProcessor = new PhotoProcessor();
@@ -41,21 +46,20 @@ public class PhotoCrawler {
 
     public void downloadPhotosForQuery(String query) {
         try {
-            downloadAndSavePhotos(photoDownloader.searchForPhotos(query), 10);
+            downloadAndSavePhotos(photoDownloader.searchForPhotos(query));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void downloadPhotosForMultipleQueries(List<String> queries) {
-        downloadAndSavePhotos(photoDownloader.searchForPhotos(queries), 10);
+        downloadAndSavePhotos(photoDownloader.searchForPhotos(queries));
     }
 
-    private void downloadAndSavePhotos(Observable<Photo> photoObservable,
-                                       int count) {
+    private void downloadAndSavePhotos(Observable<Photo> photoObservable) {
         photoObservable
-                .take(count)
                 .compose(this::processPhotos)
+
                 .subscribe(
                         photoSerializer::savePhoto,
                         e -> log.log(
@@ -67,7 +71,15 @@ public class PhotoCrawler {
     }
 
     private Observable<Photo> processPhotos(Observable<Photo> photoObservable) {
-        return photoObservable.filter(photoProcessor::isPhotoValid)
-                              .map(photoProcessor::convertToMiniature);
+        return photoObservable
+                .filter(photoProcessor::isPhotoValid)
+                .groupBy(PhotoSize::resolve)
+                .flatMap(group -> group.getKey() ==
+                                  PhotoSize.LARGE ?
+                                  group.observeOn(Schedulers.computation())
+                                       .map(photoProcessor::convertToMiniature) :
+                                  group.window(5, 5, TimeUnit.SECONDS)
+                                       .flatMap(o -> o)
+                );
     }
 }
