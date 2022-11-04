@@ -22,10 +22,8 @@ public class PhotoCrawler {
     private final PhotoSerializer photoSerializer;
 
     private final PhotoProcessor photoProcessor;
-    private final int bufferSize;
 
-    public PhotoCrawler(int bufferSize) throws IOException {
-        this.bufferSize = bufferSize;
+    public PhotoCrawler() throws IOException {
         this.photoDownloader = new PhotoDownloader();
         this.photoSerializer = new PhotoSerializer("./photos");
         this.photoProcessor = new PhotoProcessor();
@@ -59,7 +57,6 @@ public class PhotoCrawler {
     private void downloadAndSavePhotos(Observable<Photo> photoObservable) {
         photoObservable
                 .compose(this::processPhotos)
-
                 .subscribe(
                         photoSerializer::savePhoto,
                         e -> log.log(

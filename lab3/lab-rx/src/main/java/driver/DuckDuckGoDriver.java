@@ -14,39 +14,57 @@ import java.util.stream.StreamSupport;
 
 public class DuckDuckGoDriver {
 
-    private static final Pattern VQD_ID = Pattern.compile("vqd=([\\d-]+)&", Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    private static final Pattern VQD_ID = Pattern.compile(
+            "vqd=([\\d-]+)&",
+            Pattern.MULTILINE | Pattern.CASE_INSENSITIVE
+    );
 
-    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36";
+    public static final String USER_AGENT =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36";
 
-    public static List<String> searchForImages(String query) throws IOException, InterruptedException {
+    public static List<String> searchForImages(String query)
+            throws IOException, InterruptedException {
         var htmlQuery = query.replace(' ', '+');
         var searchSource = downloadUrlSource(htmlQuery);
         return extractPhotoUrls(searchSource, htmlQuery);
     }
 
-    private static String downloadUrlSource(String searchQuery) throws IOException, InterruptedException {
+    private static String downloadUrlSource(String searchQuery)
+            throws IOException, InterruptedException {
         var client = HttpClient.newHttpClient();
-        var uri = URI.create(String.format("https://duckduckgo.com/?q=%s", searchQuery));
+        var uri = URI.create(String.format(
+                "https://duckduckgo.com/?q=%s",
+                searchQuery
+        ));
         HttpResponse<String> response = sendRequest(client, uri);
         return response.body();
     }
 
-    private static HttpResponse<String> sendRequest(HttpClient client, URI uri) throws IOException, InterruptedException {
+    private static HttpResponse<String> sendRequest(HttpClient client, URI uri)
+            throws IOException, InterruptedException {
         var request = HttpRequest.newBuilder()
-                .uri(uri)
-                .header("User-Agent", USER_AGENT)
-                .GET()
-                .build();
-        return client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+                                 .uri(uri)
+                                 .header("User-Agent", USER_AGENT)
+                                 .GET()
+                                 .build();
+        return client.send(
+                request,
+                HttpResponse.BodyHandlers.ofString()
+        );
     }
 
-    private static List<String> extractPhotoUrls(String html, String searchQuery) throws IOException, InterruptedException {
+    private static List<String> extractPhotoUrls(String html,
+                                                 String searchQuery)
+            throws IOException, InterruptedException {
         var matcher = VQD_ID.matcher(html);
         if (matcher.find()) {
             String vqdId = matcher.group(1);
 
-            URI uri = URI.create(String.format("https://duckduckgo.com/i.js?q=%s&o=json&vqd=%s", searchQuery, vqdId));
+            URI uri = URI.create(String.format(
+                    "https://duckduckgo.com/i.js?q=%s&o=json&vqd=%s",
+                    searchQuery,
+                    vqdId
+            ));
             HttpClient client = HttpClient.newHttpClient();
             HttpResponse<String> response = sendRequest(client, uri);
 
@@ -59,8 +77,9 @@ public class DuckDuckGoDriver {
         var jsonObject = new JSONObject(responseJson);
         var results = jsonObject.getJSONArray("results");
         return StreamSupport.stream(results.spliterator(), false)
-                .filter(JSONObject.class::isInstance)
-                .map(result -> ((JSONObject) result).getString("image"))
-                .collect(Collectors.toList());
+                            .filter(JSONObject.class::isInstance)
+                            .map(result -> ((JSONObject) result).getString(
+                                    "image"))
+                            .collect(Collectors.toList());
     }
 }

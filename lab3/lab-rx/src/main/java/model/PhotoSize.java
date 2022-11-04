@@ -1,8 +1,9 @@
 package model;
 
 public enum PhotoSize {
-
-    SMALL, MEDIUM, LARGE;
+    SMALL,
+    MEDIUM,
+    LARGE;
 
     private static final int SMALL_PHOTO_FILE_SIZE = 100 * 1024; // 100kB
 
@@ -10,7 +11,7 @@ public enum PhotoSize {
 
     public static PhotoSize resolve(Photo photo) {
         int photoFileSize = photo.getPhotoData().length;
-        if(photoFileSize <= SMALL_PHOTO_FILE_SIZE) {
+        if (photoFileSize <= SMALL_PHOTO_FILE_SIZE) {
             return SMALL;
         } else if (photoFileSize <= MEDIUM_PHOTO_FILE_SIZE) {
             return MEDIUM;
