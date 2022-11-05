@@ -75,8 +75,8 @@ public class PhotoCrawler {
                                   PhotoSize.LARGE ?
                                   group.observeOn(Schedulers.computation())
                                        .map(photoProcessor::convertToMiniature) :
-                                  group.window(5, 5, TimeUnit.SECONDS)
-                                       .flatMap(o -> o)
+                                  group.buffer(5, TimeUnit.SECONDS)
+                                        .flatMapIterable(o -> o)
                 );
     }
 }
