@@ -99,7 +99,7 @@ public class AccountOverviewController {
                                                                .getSelectedItems())) {
             RemoveTransactionCommand removeTransactionCommand =
                     new RemoveTransactionCommand(transaction, data);
-            removeTransactionCommand.execute();
+            commandRegistry.executeCommand(removeTransactionCommand);
         }
     }
 
@@ -151,8 +151,6 @@ public class AccountOverviewController {
                 super.updateItem(item, empty);
                 setText((item != null && !empty) ? item.getName() : null);
             }
-
-            ;
         });
     }
 }

@@ -24,11 +24,11 @@ public class RemoveTransactionCommand implements Command {
 
     @Override
     public void undo() {
-        account.removeTransaction(transactionToRemove);
+        account.addTransaction(transactionToRemove);
     }
 
     @Override
     public void redo() {
-        account.addTransaction(transactionToRemove);
+        account.removeTransaction(transactionToRemove);
     }
 }

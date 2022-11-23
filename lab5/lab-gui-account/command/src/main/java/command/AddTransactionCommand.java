@@ -20,7 +20,7 @@ public class AddTransactionCommand implements Command {
 
     @Override
     public String getName() {
-        return "New transaction: " + transactionToAdd.toString();
+        return "New transaction: " + transactionToAdd;
     }
 
     @Override

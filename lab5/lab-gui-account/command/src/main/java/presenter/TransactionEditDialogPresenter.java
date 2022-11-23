@@ -1,18 +1,16 @@
 package presenter;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
-
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.converter.LocalDateStringConverter;
-
 import model.Category;
 import model.Transaction;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
 
 public class TransactionEditDialogPresenter {
 
